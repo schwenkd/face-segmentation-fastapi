@@ -18,6 +18,7 @@ app = FastAPI(title='Face Segmentation Background Changer')  #, root_path="/Prod
 
 #The face-bokeh endpoint receives post requests with the image and returns the transformed image
 # Create an async POST function for "/face-bokeh/{query}" and look for tags = tags=["Face Bokeh"]
+@app.post("/face-bokeh/{query}",tags=["Face Bokeh"])
 async def bokeh(file: UploadFile = File(...), query: str = ''):
     #We await the string, then read it
     contents = await file.read()
@@ -27,6 +28,7 @@ async def bokeh(file: UploadFile = File(...), query: str = ''):
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     #We run the model to get the segmentation masks
     mask = model.get_mask(img)
+
     #We add the background
     return_img = model.transform(img, mask, query)
     #We encode the image before returning it
@@ -35,9 +37,9 @@ async def bokeh(file: UploadFile = File(...), query: str = ''):
 
 
 #The root path will be used as the health check endpoint
-@app.get("/", tags = ["Face Bokeh"])
-async def root():
-    return{"": ""}
+@app.get("/", tags=["Health Check"])
+async def healthcheck():
+    return {"status": "Service is online"}
 
 #Mangum is an adapter for running ASGI applications in AWS Lambda
 #https://github.com/jordaneremieff/mangum
