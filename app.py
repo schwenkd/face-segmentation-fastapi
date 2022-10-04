@@ -32,7 +32,7 @@ async def bokeh(file: UploadFile = File(...), query: str = ''):
     #We add the background
     return_img = model.transform(img, mask, query)
     #We encode the image before returning it
-    _, png_img = cv2.imencode(".PNG,", return_img)
+    _, png_img = cv2.imencode(".PNG", return_img)
     return StreamingResponse(io.BytesIO(png_img.tobytes()), media_type="image/png")
 
 
